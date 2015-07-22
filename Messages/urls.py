@@ -1,10 +1,8 @@
-from django.conf.urls import urls
-
+from django.conf.urls import url, include
 from . import views
 
 urlpatterns = [
-    url(r'^facebook/', views.facebook),
-    url(r'^twitter/', views.twitter),
-    url(r'^whatsapp/', views.whatsapp),
-    url(r'^answer', views.answer),
+    url(r'^test', views.test),
+    url(r'^answer/', views.answer),
+    url('^', include('django.contrib.auth.urls')),
 ]

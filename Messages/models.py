@@ -12,12 +12,7 @@ class Message(models.Model):
     rec_by = models.CharField(max_length = 200)
     response = models.TextField()
 
-    def __init__(self, source, name, message):
-        self.source = source
-        self.name = name
-        self.message = message
-
     def __str__(self):
-        return self.source + " " + self.name + " " + self.date_rec
+        return self.source + " " + self.name + " " + self.date_rec.strftime("%B %d, %Y")
 
 

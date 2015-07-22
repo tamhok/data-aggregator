@@ -5,10 +5,14 @@ from tweepy.streaming import StreamListener
 from . import models
 from . import twitter_secrets
 import json
+import logging
 
 class TwitterHandler( StreamListener ):
 
+
     def __init__( self ):
+        self.logger = logging.getLogger(__name__)
+
         try:
             self.auth = OAuthHandler(twitter_secrets.APP_KEY, twitter_secrets.APP_SECRET)
             self.auth.secure = True
@@ -17,46 +21,41 @@ class TwitterHandler( StreamListener ):
             self.api = API(self.auth)
 
             # If the authentication was successful, you should
-            # see the name of the account print out
-            print(self.api.me().name)
+            # see the name of the account self.logger.info out
+            self.logger.info(self.api.me().name)
 
             self.stream = Stream(self.auth, self)
-
             self.stream.userstream(async = True)
 
         except BaseException as e:
-            print("Error in __init__", e)
-
+            self.logger.info("Error in __init__", e)
 
     def on_connect( self ):
-        print("Connection established!!")
+        self.logger.info("Connection established!!")
 
     def on_disconnect( self, notice ):
-        print("Connection lost!! : ", notice)
+        self.logger.info("Connection lost!! : ", notice)
 
     def on_data( self, status ):
-        print("Entered on_data()")
+        self.logger.info("Entered on_data()")
         data = json.loads(status)
         if 'direct_message' in data:
             name = data['direct_message']['sender_screen_name']
             text = data['direct_message']['text']
-            models.Message("twitter", name, text)
-            print("Name: " + name + " Text: " + text)
+            m = models.Message(source = "twitter", name = name, message = text, rec_by = "", response = "")
+            m.save()
+            self.logger.info("Name: " + name + " Text: " + text)
         return True
 
     def on_error( self, status ):
-        print(status)
+        self.logger.info(status)
 
     def sendMessage( self, name, message):
         if(self.api.me().screen_name != name):
             self.api.send_direct_message(screen_name = name, text = message)
-            print("successfully sent " + message + " to " + name)
+            self.logger.info("successfully sent " + message + " to " + name)
         else:
-            print("Cannot send message to yourself")
+            self.logger.info("Cannot send message to yourself")
 
-#def main():
-#    listener = StdOutListener()
-#    print("I'm async")
 
-#if __name__ == '__main__':
-#    main()
+tweeter = TwitterHandler()
