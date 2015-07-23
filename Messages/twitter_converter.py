@@ -58,4 +58,4 @@ class TwitterHandler( StreamListener ):
             self.logger.info("Cannot send message to yourself")
 
 
-tweeter = TwitterHandler()
+#tweeter = TwitterHandler()

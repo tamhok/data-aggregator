@@ -27,14 +27,18 @@ LOGGING = {
                                     'handlers': ['console'],
                                     'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
                                 },
+                    'converter': {
+                                    'handlers': ['console'],
+                                    'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+                                },
                 },
 }
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-LOGIN_URL = 'Messages/login'
-
+LOGIN_URL = '/Messages/login'
+LOGIN_REDIRECT_URL = '/Messages/answer'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -63,6 +67,8 @@ INSTALLED_APPS = (
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
